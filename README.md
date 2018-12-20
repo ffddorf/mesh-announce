@@ -13,6 +13,7 @@ information needed for example to display the name of the server on node-maps.
  * lsb\_release
  * ethtool
  * python3 (>= 3.3)
+ * python3 netifaces
  * If using alfred: alfred binary in PATH
 
 ## Setup

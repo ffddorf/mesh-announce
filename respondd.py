@@ -6,6 +6,7 @@ import socket
 import struct
 import json
 import os
+import netifaces
 from zlib import compress
 
 from providers import get_providers
@@ -59,14 +60,22 @@ if __name__ == "__main__":
     parser.add_argument('-b', dest='batadv_iface',
                         default='bat0', metavar='<iface>',
                         help='batman-adv interface (default: bat0)')
+    parser.add_argument('-l', dest='listen_iface',
+                        default='bat0', metavar='<iface>',
+                        help='listen interface (default: bat0)')
     parser.add_argument('-m', dest='mesh_ipv4',
                         metavar='<mesh_ipv4>',
                         help='mesh ipv4 address')
     args = parser.parse_args()
 
     socketserver.ThreadingUDPServer.address_family = socket.AF_INET6
+    server_address = socket.getaddrinfo(
+        netifaces.ifaddresses(args.listen_iface)[netifaces.AF_INET6][-1]["addr"],
+        args.port,
+        socket.AF_INET6,
+        socket.SOCK_DGRAM)[0][4]
     server = socketserver.ThreadingUDPServer(
-        ("", args.port),
+        server_address,
         get_handler(get_providers(args.directory), {'batadv_dev': args.batadv_iface, 'mesh_ipv4': args.mesh_ipv4})
     )
 
