@@ -5,4 +5,4 @@ class Source(providers.DataSource):
         return ['batadv_dev']
 
     def call(self, batadv_dev):
-        return open('/sys/class/net/' + batadv_dev + '/address').read().strip()
+        return open('/sys/class/net/' + batadv_dev + '/master/address').read().strip()
