@@ -66,6 +66,9 @@ if __name__ == "__main__":
     parser.add_argument('-m', dest='mesh_ipv4',
                         metavar='<mesh_ipv4>',
                         help='mesh ipv4 address')
+    parser.add_argument('-n', dest='hostname',
+                        default=socket.gethostname(), metavar='<hostname>',
+                        help='hostname to announce')
     args = parser.parse_args()
 
     socketserver.ThreadingUDPServer.address_family = socket.AF_INET6
@@ -76,7 +79,7 @@ if __name__ == "__main__":
         socket.SOCK_DGRAM)[0][4]
     server = socketserver.ThreadingUDPServer(
         server_address,
-        get_handler(get_providers(args.directory), {'batadv_dev': args.batadv_iface, 'mesh_ipv4': args.mesh_ipv4})
+        get_handler(get_providers(args.directory), {'batadv_dev': args.batadv_iface, 'mesh_ipv4': args.mesh_ipv4, 'hostname': args.hostname})
     )
 
     if args.mcast_ifaces:
